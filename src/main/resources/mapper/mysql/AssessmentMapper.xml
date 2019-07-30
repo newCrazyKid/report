@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ai.rti.report.mapper.AssessmentMapper">
+
+	<!--<select id="getDataList" resultType="com.ai.rti.report.entity.Target">
+		SELECT
+		OBJ_USR_CNT as obj_user_cnt,
+		DAY_TOUCH_USR_CNT as day_touch_user_cnt,
+		MONTH_TOUCH_USR_CNT as month_touch_user_cnt,
+		TOTAL_TOUCH_USR_CNT as total_touch_user_cnt,
+		DAY_SUCCESS_USR_CNT as day_success_user_cnt,
+		MONTH_SUCCESS_USR_CNT as month_success_user_cnt,
+		TOTAL_SUCCESS_USR_CNT as total_success_user_cnt,
+		round(DAY_TOUCH_USR_CNT/OBJ_USR_CNT*100, 2) as day_cover_ratio,
+		round(MONTH_TOUCH_USR_CNT/OBJ_USR_CNT*100, 2) as month_cover_ratio,
+		round(TOTAL_TOUCH_USR_CNT/OBJ_USR_CNT*100, 2) as total_cover_ratio,
+		ROUND(DAY_SUCCESS_USR_CNT/OBJ_USR_CNT*100, 2) as day_success_ratio,
+		ROUND(MONTH_SUCCESS_USR_CNT/OBJ_USR_CNT*100, 2) as month_success_ratio,
+		ROUND(TOTAL_SUCCESS_USR_CNT/OBJ_USR_CNT*100, 2) as total_success_ratio,
+		DATA_TIME as data_time
+		FROM(
+			SELECT
+			OBJ_USR_CNT,
+			DAY_TOUCH_USR_CNT,MONTH_TOUCH_USR_CNT,TOTAL_TOUCH_USR_CNT,
+			DAY_SUCCESS_USR_CNT,MONTH_SUCCESS_USR_CNT,TOTAL_SUCCESS_USR_CNT,
+			DATA_TIME
+			FROM rep_mkt_sum
+			<where>
+				pre_lan_id=-1
+				<if test="lan_id!=null">and lan_id=#{lan_id}</if>
+				<if test="begin_time!=null">and begin_time=#{begin_time}</if>
+				<if test="end_time!=null">and end_time=#{end_time}</if>
+				<if test="mkt_campaign_name!=null">and mkt_campaign_name=#{mkt_campaign_name}</if>
+
+			</where>
+		)t;
+	</select>-->
+
+	<select id="getDataList" resultType="com.ai.rti.report.entity.Target">
+		SELECT
+		OBJ_USR_CNT as obj_user_cnt,
+		DAY_TOUCH_USR_CNT as day_touch_user_cnt,
+		MONTH_TOUCH_USR_CNT as month_touch_user_cnt,
+		TOTAL_TOUCH_USR_CNT as total_touch_user_cnt,
+		DAY_SUCCESS_USR_CNT as day_success_user_cnt,
+		MONTH_SUCCESS_USR_CNT as month_success_user_cnt,
+		TOTAL_SUCCESS_USR_CNT as total_success_user_cnt,
+		round(DAY_TOUCH_USR_CNT/OBJ_USR_CNT*100, 2) as day_cover_ratio,
+		round(MONTH_TOUCH_USR_CNT/OBJ_USR_CNT*100, 2) as month_cover_ratio,
+		round(TOTAL_TOUCH_USR_CNT/OBJ_USR_CNT*100, 2) as total_cover_ratio,
+		ROUND(DAY_SUCCESS_USR_CNT/OBJ_USR_CNT*100, 2) as day_success_ratio,
+		ROUND(MONTH_SUCCESS_USR_CNT/OBJ_USR_CNT*100, 2) as month_success_ratio,
+		ROUND(TOTAL_SUCCESS_USR_CNT/OBJ_USR_CNT*100, 2) as total_success_ratio,
+		DATA_TIME as data_time
+		FROM(
+		SELECT
+		mkt.OBJ_USR_CNT,
+		mkt.DAY_TOUCH_USR_CNT,mkt.MONTH_TOUCH_USR_CNT,mkt.TOTAL_TOUCH_USR_CNT,
+		mkt.DAY_SUCCESS_USR_CNT,mkt.MONTH_SUCCESS_USR_CNT,mkt.TOTAL_SUCCESS_USR_CNT,
+		mkt.DATA_TIME
+		FROM rep_mkt_sum mkt join rep_chl_sum chl
+		ON mkt.MKT_CAMPAIGN_NAME=chl.MKT_CAMPAIGN_NAME
+		AND mkt.LAN_ID=chl.LAN_ID
+		AND mkt.begin_time=chl.begin_time
+		AND mkt.end_time=chl.end_time
+		AND mkt.pre_lan_id=chl.pre_lan_id
+		AND mkt.DATA_TIME=chl.DATA_TIME
+		<where>
+			mkt.pre_lan_id=-1
+			<if test="lan_id!=null">and mkt.lan_id=#{lan_id}</if>
+			<if test="begin_time!=null">and mkt.begin_time=#{begin_time}</if>
+			<if test="end_time!=null">and mkt.end_time=#{end_time}</if>
+			<if test="mkt_campaign_name!=null">and mkt.mkt_campaign_name=#{mkt_campaign_name}</if>
+			<if test="channel_id!=null">and chl.channel_id=#{channel_id}</if>
+		</where>
+		)t;
+	</select>
+
+	<!--<select id="getDataById" resultType="com.ai.rti.report.entity.Target">
+		SELECT
+		OBJ_USR_CNT as obj_user_cnt,
+		DAY_TOUCH_USR_CNT as day_touch_user_cnt,MONTH_TOUCH_USR_CNT as month_touch_user_cnt,TOTAL_TOUCH_USR_CNT as total_touch_user_cnt,
+		DAY_SUCCESS_USR_CNT as day_success_user_cnt,MONTH_SUCCESS_USR_CNT as month_success_user_cnt,TOTAL_SUCCESS_USR_CNT as total_success_user_cnt,
+		ROUND(DAY_SUCCESS_USR_CNT/(DAY_SUCCESS_USR_CNT+DAY_FAIL_USR_CNT)*100, 2) as day_success_ratio,
+		ROUND(MONTH_SUCCESS_USR_CNT/(MONTH_SUCCESS_USR_CNT+MONTH_FAIL_USR_CNT)*100, 2) as month_success_ratio,
+		ROUND(TOTAL_SUCCESS_USR_CNT/(TOTAL_SUCCESS_USR_CNT+TOTAL_FAIL_USR_CNT)*100, 2) as total_success_ratio
+		FROM(SELECT
+			OBJ_USR_CNT,
+			DAY_TOUCH_USR_CNT,MONTH_TOUCH_USR_CNT,TOTAL_TOUCH_USR_CNT,
+			DAY_SUCCESS_USR_CNT,MONTH_SUCCESS_USR_CNT,TOTAL_SUCCESS_USR_CNT,
+			DAY_FAIL_USR_CNT,MONTH_FAIL_USR_CNT,TOTAL_FAIL_USR_CNT
+			FROM rep_mkt_sum
+			WHERE
+			MKT_CAMPAIGN_ID=#{mkt_campaign_id}
+		)t;
+	</select>-->
+
+	<select id="getCampDataList" resultType="com.ai.rti.report.entity.CampTable">
+		SELECT
+		gi.gateway_cycle gateway_cycle,
+		a.MKT_CAMPAIGN_ID mkt_campaign_id,
+		a.mkt_campaign_name mkt_campaign_name,
+		h.CONTENT_TPL_ID content_tpl_id,
+		m.script_name script_name,
+		me.event_code event_code,
+		IFNULL(gi.send_sms_total,0) send_sms_total,
+		IFNULL(gi.gateway_succ_commit,0) gateway_succ_commit,
+		IFNULL(gi.success_send,0) success_send,
+		CONCAT(IF(ROUND(IFNULL(gi.success_send,0)/IFNULL(gi.gateway_succ_commit,0)*100,2)=100,100,ROUND(IFNULL(gi.success_send,0)/IFNULL(gi.gateway_succ_commit,0)*100,2)),'%')
+		success_send_ratio
+		FROM mkt_campaign a
+		LEFT JOIN strategy_comp_inst g ON a.mkt_campaign_id = g.activity_id
+		LEFT JOIN strategy_comp_recom_info h ON g.comp_inst_id = h.comp_inst_id
+		INNER JOIN g_itm_remind_send_d gi ON gi.act_id=h.CONTENT_TPL_ID
+		INNER JOIN mkt_script m ON m.CONTENT_TPL_ID = h.CONTENT_TPL_ID
+		INNER JOIN MKT_CAM_EVT_REL me ON a.mkt_campaign_id=me.mkt_campaign_id
+		<where>
+			<if test="gateway_cycle!=null">and gi.gateway_cycle=#{gateway_cycle}</if>
+			<if test="mkt_campaign_name!=null">and a.mkt_campaign_name=#{mkt_campaign_name}</if>
+			<if test="script_name!=null">and m.script_name=#{script_name}</if>
+		</where>
+	</select>
+
+
+</mapper>
