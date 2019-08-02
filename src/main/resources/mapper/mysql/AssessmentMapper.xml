@@ -69,8 +69,8 @@
 		<where>
 			mkt.pre_lan_id=-1
 			<if test="lan_id!=null">and mkt.lan_id=#{lan_id}</if>
-			<if test="begin_time!=null">and mkt.begin_time=#{begin_time}</if>
-			<if test="end_time!=null">and mkt.end_time=#{end_time}</if>
+			<if test="begin_time!=null">and substr(mkt.begin_time, 1, 10)=#{begin_time}</if>
+			<if test="end_time!=null">and substr(mkt.end_time, 1, 10)=#{end_time}</if>
 			<if test="mkt_campaign_name!=null">and mkt.mkt_campaign_name=#{mkt_campaign_name}</if>
 			<if test="channel_id!=null">and chl.channel_id=#{channel_id}</if>
 		</where>

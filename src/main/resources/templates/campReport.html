@@ -3,82 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>营服报表</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" />
-    <script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.css" />
+    <script type="text/javascript" src="../static/js/jquery.js" />
+    <script type="text/javascript">
+        var showTableHtml;
+        $(function () {
+            initTable();
+            $("#showTable").html(showTableHtml);//显示初始数据表格
+        });
+
+    </script>
 </head>
 <body style="background-color: #E0FFFF;">
-    <!-- 首栏输入框 -->
-    <!--<div class="row">
-        <div class="col-md-1">活动状态</div>
-        <div class="col-md-1">
-            <select id="camp_status_cd" class="form-control">
-                <option selected="selected" value="">全部</option>
-                <option value="1000">有效</option>
-                <option value="1100">无效</option>
-
-            </select>
-        </div>
-        <div class="col-md-1">活动分类</div>
-        <div class="col-md-1">
-            <select id="camp_mkt_campaign_type" class="form-control">
-                <option selected="selected" value="">全部</option>
-                <option>1000</option>
-                <option>5000</option>
-
-            </select>
-        </div>
-        <div class="col-md-1">记录状态</div>
-        <div class="col-md-1">
-            <select id="scr_status_cd" class="form-control">
-                <option selected="selected" value="">全部</option>
-                <option value="1000">有效</option>
-                <option value="1100">无效</option>
-
-            </select>
-        </div>
-        <div class="col-md-1">短信启用</div>
-        <div class="col-md-1">
-            <select id="scr_content_tpl_status" class="form-control">
-                <option selected="selected" value="">全部</option>
-                <option value="1">启用</option>
-                <option value="2">暂停</option>
-
-            </select>
-        </div>
-    </div>
--->
-    <div class="row">
-        <div class="col-md-1">账期</div>
-        <div class="col-md-2">
-            <input type="text" id="gateway_cycle" placeholder="请输入账期">
-        </div>
-        <div class="col-md-1">场景名称</div>
-        <div class="col-md-2">
-            <input type="text" id="mkt_campaign_name" placeholder="请输入服务场景名称">
-        </div>
-        <div class="col-md-1">短信名称</div>
-        <div class="col-md-2">
-            <input type="text" id="script_name" placeholder="请输入短信名称">
-        </div>
-        <div class="col-md-1">
-            <button class="btn btn-default" onclick="getCampDataList()">查询</button>
-        </div>
-        <div class="col-md-1">
-            <button class="btn btn-default" onclick="exportToExcel()">数据导出</button>
-        </div>
-
-    </div>
-
-    <!-- 数据表格 -->
-    <div id="showTable"></div>
-
-<script type="text/javascript">
-    var showTableHtml;
-    $(function () {
-        initTable();
-        $("#showTable").html(showTableHtml);//显示初始数据表格
-    });
-
+<script>
     function getCampDataList() {
         var gateway_cycle = document.getElementById("gateway_cycle").value;
         var mkt_campaign_name = document.getElementById("mkt_campaign_name").value;
@@ -86,7 +23,7 @@
 
         $.ajax({
             type:"POST",
-            url:"http://localhost:9199/report-home/assessment/getCampDataList",
+            url:"/report/assessment/getCampDataList",
             dataType:"json",
             data:{
                 "gateway_cycle":gateway_cycle,
@@ -112,6 +49,8 @@
 
                 showTableHtml += "</tbody></table>";
                 $("#showTable").html(showTableHtml);//加载数据表格
+
+                exportToExcel();
             },
             error:function () {
                 alert("error");
@@ -137,28 +76,59 @@
     }
 
     function exportToExcel() {
-            var gateway_cycle = document.getElementById("gateway_cycle").value;
-            var mkt_campaign_name = document.getElementById("mkt_campaign_name").value;
-            var script_name = document.getElementById("script_name").value;
+        var gateway_cycle = document.getElementById("gateway_cycle").value;
+        var mkt_campaign_name = document.getElementById("mkt_campaign_name").value;
+        var script_name = document.getElementById("script_name").value;
 
-            $.ajax({
-                type:"POST",
-                url:"http://localhost:9199/report-home/assessment/exportToExcel",
-                dataType:"json",
-                data:{
-                    "gateway_cycle":gateway_cycle,
-                    "mkt_campaign_name":mkt_campaign_name,
-                    "script_name":script_name
-                },
-                async:true,
-                success:function (result) {
-                    alert(result.data);
-                },
-                error:function (result) {
-                    alert(result);
-                }
-            });
+        $.ajax({
+            type:"POST",
+            url:"/report/assessment/exportToExcel",
+            dataType:"json",
+            data:{
+                "gateway_cycle":gateway_cycle,
+                "mkt_campaign_name":mkt_campaign_name,
+                "script_name":script_name
+            },
+            async:true,
+            success:function (result) {
+                //alert(result.data);
+            },
+            error:function (result) {
+                //alert(result);
+            }
+        });
     }
 </script>
+
+<div class="row">
+    <div class="col-md-1">账期</div>
+    <div class="col-md-2">
+        <input type="text" id="gateway_cycle" placeholder="请输入账期">
+    </div>
+    <div class="col-md-1">场景名称</div>
+    <div class="col-md-2">
+        <input type="text" id="mkt_campaign_name" placeholder="请输入服务场景名称">
+    </div>
+    <div class="col-md-1">短信名称</div>
+    <div class="col-md-2">
+        <input type="text" id="script_name" placeholder="请输入短信名称">
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-default" onclick="getCampDataList()">查询</button>
+    </div>
+    <!--<div class="col-md-1">
+        <button class="btn btn-default" onclick="exportToExcel()">全部导出</button>
+    </div>-->
+    <div class="col-md-1">
+        <button class="btn btn-default" style="color: #fff3f3">
+            <a href="/xjl/camp_report.xls" download="">下载</a>
+        </button>
+    </div>
+
+</div>
+
+<!-- 数据表格 -->
+<div id="showTable"></div>
+
 </body>
 </html>

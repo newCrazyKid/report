@@ -1,31 +1,39 @@
 ---
 spring:
-  freemarker:
-    template-loader-path: classpath:/templates/
+#  mvc:
+#    view:
+#      prefix: /templates/
+#      suffix: .html
+#    static-path-pattern: /static/**
+#  freemarker:
+#    template-loader-path: classpath:/templates/
   application:
-    name: report-home
+    name: report
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
 #    url: jdbc:mysql://10.62.60.33:8913/RTI_AIRMDP
 #    username: umobile
 #    password: Umobile@123
-    url: jdbc:mysql://10.62.49.70:8913/AIMDP
-    username: msc_app
-    password: msc_app@9102
+#    url: jdbc:mysql://10.62.49.70:8913/AIMDP
+#    username: msc_app
+#    password: msc_app@9102
+    url: jdbc:mysql://10.62.228.17:3306/AIMDP
+    username: coc
+    password: coc123
     
   session:
     store-type: none
-  thymeleaf:
-    cache: false 
-    prefix: classpath:/templates/
+#  thymeleaf:
+#    cache: false
+#    prefix: classpath:/templates/
     servlet:
       content-type: text/html
     suffix: .html
     encoding: UTF-8
 server:
-  context-path: /report-home
+  context-path: /report
   #context-path: /
-  port: 9199
+  port: 9899
 management:
   security:
     enabled: false
